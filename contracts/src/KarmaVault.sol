@@ -191,8 +191,11 @@ contract KarmaVault is ERC4626, ReentrancyGuard, Ownable, Pausable {
             // Transfer yield to router
             IERC20(asset()).safeTransfer(address(yieldRouter), totalYield);
 
-            // Route yield (router handles donation allocation)
+            // Route yield (router sends user share back to vault, keeps donation portion)
             yieldRouter.routeYield(totalYield);
+            
+            // User share is automatically sent back to vault by router
+            // This increases vault assets and share value
 
             emit YieldHarvested(totalYield, block.timestamp);
         }
@@ -206,9 +209,26 @@ contract KarmaVault is ERC4626, ReentrancyGuard, Ownable, Pausable {
      * @return donatedAmount Amount donated to public goods
      */
     function harvestAndDonate() external nonReentrant whenNotPaused returns (uint256 totalYield, uint256 donatedAmount) {
-        totalYield = harvest();
-        
+        // Harvest yield first
+        totalYield = 0;
+
+        // Harvest from each adapter
+        for (uint256 i = 0; i < adapters.length; i++) {
+            if (adapters[i].active) {
+                uint256 yield = adapters[i].adapter.harvest();
+                totalYield += yield;
+            }
+        }
+
         if (totalYield > 0) {
+            // Transfer yield to router
+            IERC20(asset()).safeTransfer(address(yieldRouter), totalYield);
+
+            // Route yield (router handles donation allocation)
+            yieldRouter.routeYield(totalYield);
+
+            emit YieldHarvested(totalYield, block.timestamp);
+            
             // Router handles the donation execution
             donatedAmount = yieldRouter.executeDonation();
             uint256 userShare = totalYield - donatedAmount;
@@ -330,11 +350,13 @@ contract KarmaVault is ERC4626, ReentrancyGuard, Ownable, Pausable {
      * @param totalAmount Total amount to allocate
      */
     function _allocateToAdapters(uint256 totalAmount) internal {
+        IERC20 assetToken = IERC20(asset());
         for (uint256 i = 0; i < adapters.length; i++) {
             if (adapters[i].active) {
                 uint256 adapterAmount = (totalAmount * adapters[i].allocation) / MAX_ALLOCATION;
                 if (adapterAmount > 0) {
-                    IERC20(asset()).safeApprove(address(adapters[i].adapter), adapterAmount);
+                    // Approve adapter to spend assets (OpenZeppelin v5 uses forceApprove)
+                    assetToken.forceApprove(address(adapters[i].adapter), adapterAmount);
                     adapters[i].adapter.deposit(adapterAmount);
                 }
             }

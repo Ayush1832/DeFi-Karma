@@ -1,0 +1,53 @@
+{
+  "network": {
+    "name": "sepolia",
+    "chainId": 11155111
+  },
+  "deployer": "0x4b8dad3Ea791D20fE1FeC1032f2EeCC67F15C127",
+  "timestamp": "2025-11-09T12:45:16.162Z",
+  "contracts": {
+    "KarmaVault": "0xBF956a6FBEA391E7223189Fc714893BD7AA1224B",
+    "YieldRouter": "0x1F778a23bf953B00796D1702e7fDF89Bb763522b",
+    "ImpactHook": "0x8a9FFac4C195F78a0B42166cE967842601D144A1",
+    "AaveAdapter": "0x213d6D22f6125Ef756e67DD19632cE4528ff805E",
+    "MorphoAdapter": "0x469895CF68045bB8bf9A1F28fEF795388B7CF095",
+    "SparkAdapter": "0xa64D2Ba04F316d89d2276645045cdCe263Cf0b79",
+    "KalaniStrategy": "0xce2c4277AC4B3a250c04945a1f4464A61F57284E",
+    "MorphoMockVault": "0x548b7FC6e5D87a4FA63E435bbf396Cfde3bFE40C",
+    "SparkMockVault": "0x9F3558617C0052Dc44b3D90A0839B6d790ea5949",
+    "YearnMockVault": "0xE8a32a4e0649ce61f4dd8F3214BE4db3Ab5A844e"
+  },
+  "configuration": {
+    "asset": "0x94a9D9AC8a22534E3FaCa9F4e7F2E2cf85d5E4C8",
+    "donationRatio": 2000,
+    "userShareRatio": 8000,
+    "adapters": {
+      "Aave": {
+        "address": "0x213d6D22f6125Ef756e67DD19632cE4528ff805E",
+        "allocation": 4000
+      },
+      "Morpho": {
+        "address": "0x469895CF68045bB8bf9A1F28fEF795388B7CF095",
+        "allocation": 2500
+      },
+      "Spark": {
+        "address": "0xa64D2Ba04F316d89d2276645045cdCe263Cf0b79",
+        "allocation": 2000
+      },
+      "Yearn": {
+        "address": "0xce2c4277AC4B3a250c04945a1f4464A61F57284E",
+        "allocation": 1500
+      }
+    },
+    "recipients": [
+      {
+        "address": "0x7d655c57f71464B6f83811C55D84009Cd9f5221C",
+        "allocation": 5000
+      },
+      {
+        "address": "0xf29ff96aaea6c9a1f2518514c55e2d4f4e8b4e2b",
+        "allocation": 5000
+      }
+    ]
+  }
+}

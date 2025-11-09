@@ -1,0 +1,93 @@
+{
+  "timestamp": "2025-11-09T15:47:52.405Z",
+  "network": "sepolia",
+  "results": [
+    {
+      "step": "1.1",
+      "status": "SUCCESS",
+      "message": "Initial state - Vault: 0.0 USDC, Supply: 0.0 DKV, Donation: 20%, Donated: 0.0 USDC"
+    },
+    {
+      "step": "2.1",
+      "status": "SUCCESS",
+      "message": "All adapters accessible - Aave v3, Morpho v2, Spark Protocol, Kalani (Yearn v3)"
+    },
+    {
+      "step": "2.2",
+      "status": "SUCCESS",
+      "message": "Adapter assets - Aave: 0, Morpho: 0, Spark: 0, Kalani: 0"
+    },
+    {
+      "step": "3.1",
+      "status": "SUCCESS",
+      "message": "Recipients configured - 0x7d655c57f71464B6f83811C55D84009Cd9f5221C (50%), 0xF29ff96AaEa6c9a1f2518514C55E2D4F4E8b4e2b (50%)"
+    },
+    {
+      "step": "4.1",
+      "status": "SUCCESS",
+      "message": "Vault configured - DeFi Karma Vault (DKV), Router: 0x1F778a23..., Asset: USDC"
+    },
+    {
+      "step": "5.1",
+      "status": "SUCCESS",
+      "message": "Router configured - Hook: 0x8a9FFac4..., Donation: 20%, User: 80%"
+    },
+    {
+      "step": "6.1",
+      "status": "SUCCESS",
+      "message": "Hook configured - Asset: USDC, Router: 0xC532a742..., WETH: 0xfFf99767..."
+    },
+    {
+      "step": "7.1",
+      "status": "SUCCESS",
+      "message": "Harvest function callable (gas estimate: 101975)"
+    },
+    {
+      "step": "7.2",
+      "status": "SUCCESS",
+      "message": "HarvestAndDonate function callable (gas estimate: 102089)"
+    },
+    {
+      "step": "7.3",
+      "status": "SUCCESS",
+      "message": "Router routeYield function accessible"
+    },
+    {
+      "step": "7.4",
+      "status": "SUCCESS",
+      "message": "Router executeDonation function accessible"
+    },
+    {
+      "step": "8.1",
+      "status": "SUCCESS",
+      "message": "All adapters have harvest function"
+    },
+    {
+      "step": "8.2",
+      "status": "SUCCESS",
+      "message": "All adapters have deposit function"
+    },
+    {
+      "step": "8.3",
+      "status": "SUCCESS",
+      "message": "All adapters have withdraw function"
+    },
+    {
+      "step": "9.1",
+      "status": "SUCCESS",
+      "message": "Events defined - Vault: 13, Router: 7, Hook: 4"
+    },
+    {
+      "step": "10.1",
+      "status": "SUCCESS",
+      "message": "All contracts have correct owner"
+    }
+  ],
+  "summary": {
+    "total": 16,
+    "succeeded": 16,
+    "skipped": 0,
+    "failed": 0,
+    "successRate": 100
+  }
+}

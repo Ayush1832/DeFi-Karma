@@ -18,9 +18,10 @@
     "emitDecoratorMetadata": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "types": []
   },
   "include": ["./scripts", "./test", "./hardhat.config.ts"],
-  "exclude": ["./node_modules", "./cache", "./artifacts", "./dist"]
+  "exclude": ["./node_modules", "./cache", "./artifacts", "./dist", "./typechain-types"]
 }
 

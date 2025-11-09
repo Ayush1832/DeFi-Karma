@@ -2,7 +2,7 @@
 
 import { Navbar } from '@/components/Navbar';
 import { useAccount, useReadContract, useWriteContract } from 'wagmi';
-import { CONTRACT_ADDRESSES, VAULT_ABI } from '@/lib/constants';
+import { CONTRACT_ADDRESSES, VAULT_ABI, ERC20_ABI, ROUTER_ABI } from '@/lib/constants';
 import { formatCurrency, formatNumber } from '@/lib/utils';
 import { TrendingUp, DollarSign, Heart, Activity } from 'lucide-react';
 import { useState } from 'react';
@@ -64,18 +64,39 @@ export default function Dashboard() {
     query: { enabled: !!address },
   });
 
-  const { writeContract: deposit } = useWriteContract();
-  const { writeContract: withdraw } = useWriteContract();
-  const { writeContract: harvest } = useWriteContract();
+  const { writeContract: deposit, isPending: isDepositPending } = useWriteContract();
+  const { writeContract: withdraw, isPending: isWithdrawPending } = useWriteContract();
+  const { writeContract: harvest, isPending: isHarvestPending } = useWriteContract();
+  const { writeContract: approve } = useWriteContract();
 
-  const handleDeposit = () => {
+  // Read router data
+  const { data: totalDonated } = useReadContract({
+    address: CONTRACT_ADDRESSES.YIELD_ROUTER,
+    abi: ROUTER_ABI,
+    functionName: 'totalDonated',
+  });
+
+  const handleDeposit = async () => {
     if (!address || !depositAmount) return;
-    deposit({
-      address: CONTRACT_ADDRESSES.KARMA_VAULT,
-      abi: VAULT_ABI,
-      functionName: 'deposit',
-      args: [BigInt(parseFloat(depositAmount) * 1e6), address], // Assuming 6 decimals for USDC
-    });
+    try {
+      const amount = BigInt(parseFloat(depositAmount) * 1e6);
+      // First approve USDC spending
+      await approve({
+        address: CONTRACT_ADDRESSES.USDC,
+        abi: ERC20_ABI,
+        functionName: 'approve',
+        args: [CONTRACT_ADDRESSES.KARMA_VAULT, amount],
+      });
+      // Then deposit
+      deposit({
+        address: CONTRACT_ADDRESSES.KARMA_VAULT,
+        abi: VAULT_ABI,
+        functionName: 'deposit',
+        args: [amount, address],
+      });
+    } catch (error) {
+      console.error('Deposit error:', error);
+    }
   };
 
   const handleWithdraw = () => {
@@ -139,7 +160,9 @@ export default function Dashboard() {
               <span className="text-gray-600 text-sm">Total Donated</span>
               <Heart className="h-5 w-5 text-gray-400" />
             </div>
-            <div className="text-2xl font-bold text-gray-900">$0</div>
+            <div className="text-2xl font-bold text-gray-900">
+              {totalDonated ? formatCurrency(Number(totalDonated) / 1e6) : '$0'}
+            </div>
           </div>
           <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
             <div className="flex items-center justify-between mb-2">
@@ -163,9 +186,10 @@ export default function Dashboard() {
             />
             <button
               onClick={handleDeposit}
-              className="w-full px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors"
+              disabled={isDepositPending || !depositAmount}
+              className="w-full px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Deposit
+              {isDepositPending ? 'Processing...' : 'Deposit'}
             </button>
           </div>
           <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
@@ -179,9 +203,10 @@ export default function Dashboard() {
             />
             <button
               onClick={handleWithdraw}
-              className="w-full px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+              disabled={isWithdrawPending || !withdrawAmount}
+              className="w-full px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Withdraw
+              {isWithdrawPending ? 'Processing...' : 'Withdraw'}
             </button>
           </div>
           <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
@@ -191,9 +216,10 @@ export default function Dashboard() {
             </p>
             <button
               onClick={handleHarvest}
-              className="w-full px-4 py-2 bg-gradient-to-r from-teal-600 to-purple-600 text-white rounded-lg hover:opacity-90 transition-opacity"
+              disabled={isHarvestPending}
+              className="w-full px-4 py-2 bg-gradient-to-r from-teal-600 to-purple-600 text-white rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Harvest Now
+              {isHarvestPending ? 'Processing...' : 'Harvest Now'}
             </button>
           </div>
         </div>
@@ -222,7 +248,7 @@ export default function Dashboard() {
                   cx="50%"
                   cy="50%"
                   labelLine={false}
-                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                  label={(entry: any) => `${entry.name} ${((entry.percent || 0) * 100).toFixed(0)}%`}
                   outerRadius={80}
                   fill="#8884d8"
                   dataKey="value"

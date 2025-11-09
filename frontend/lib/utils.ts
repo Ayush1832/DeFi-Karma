@@ -5,8 +5,9 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function formatAddress(address: string): string {
-  return `${address.slice(0, 6)}...${address.slice(-4)}`;
+export function formatAddress(address: string | `0x${string}`): string {
+  const addr = typeof address === 'string' ? address : address;
+  return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
 }
 
 export function formatCurrency(amount: number, decimals: number = 2): string {

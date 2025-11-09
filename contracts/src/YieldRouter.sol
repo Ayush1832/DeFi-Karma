@@ -78,11 +78,13 @@ contract YieldRouter is IYieldRouter, ReentrancyGuard, Ownable {
         totalDonated += donationAmount;
         totalUserShare += userShareAmount;
 
-        // Transfer user share back to vault (will increase share value)
-        // Note: In production, this would be sent back to KarmaVault to increase assets
-        // For now, we keep it in the router and the vault can pull it
+        // Transfer user share back to vault (caller) - this increases vault assets
+        // The caller (vault) receives the user share to increase share value
+        if (userShareAmount > 0) {
+            asset.safeTransfer(msg.sender, userShareAmount);
+        }
 
-        // Donation amount will be executed via executeDonation()
+        // Donation amount remains in router for executeDonation()
         emit YieldRouted(amount, userShareAmount, donationAmount);
     }
 
@@ -91,15 +93,12 @@ contract YieldRouter is IYieldRouter, ReentrancyGuard, Ownable {
      * @return donatedAmount Amount actually donated
      */
     function executeDonation() external override nonReentrant returns (uint256 donatedAmount) {
-        // Calculate donation amount from routed yield
-        uint256 availableDonation = totalDonated - (totalYieldRouted - totalUserShare - totalDonated);
-        
-        // For simplicity, donate all pending donations
+        // For simplicity, donate all pending donations from router balance
         donatedAmount = asset.balanceOf(address(this));
 
         if (donatedAmount > 0 && recipients.length > 0) {
-            // Approve hook to spend assets
-            asset.safeApprove(address(impactHook), donatedAmount);
+            // Approve hook to spend assets (OpenZeppelin v5 uses forceApprove)
+            asset.forceApprove(address(impactHook), donatedAmount);
 
             // Execute donation through hook
             impactHook.executeDonation(donatedAmount, recipients, recipientAllocations);
@@ -184,6 +183,14 @@ contract YieldRouter is IYieldRouter, ReentrancyGuard, Ownable {
 
     /**
      * @notice Returns number of recipients
+     * @return Number of recipients
+     */
+    function recipientCount() external view returns (uint256) {
+        return recipients.length;
+    }
+
+    /**
+     * @notice Returns number of recipients (alias for recipientCount)
      * @return Number of recipients
      */
     function getRecipientCount() external view returns (uint256) {

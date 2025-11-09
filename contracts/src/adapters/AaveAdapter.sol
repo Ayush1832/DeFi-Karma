@@ -50,8 +50,8 @@ contract AaveAdapter is IAdapter, ReentrancyGuard, Ownable {
         aToken = IERC20(_aToken);
         lendingPool = _lendingPool;
 
-        // Approve lending pool to spend assets
-        asset.safeApprove(_lendingPool, type(uint256).max);
+        // Approve lending pool to spend assets (OpenZeppelin v5 uses forceApprove)
+        asset.forceApprove(_lendingPool, type(uint256).max);
     }
 
     /**
@@ -182,7 +182,7 @@ contract AaveAdapter is IAdapter, ReentrancyGuard, Ownable {
     function setLendingPool(address _lendingPool) external onlyOwner {
         require(_lendingPool != address(0), "Invalid lending pool");
         lendingPool = _lendingPool;
-        asset.safeApprove(_lendingPool, type(uint256).max);
+        asset.forceApprove(_lendingPool, type(uint256).max);
     }
 }
 

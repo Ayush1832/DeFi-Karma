@@ -15,10 +15,11 @@ import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 contract SparkAdapter is IAdapter, ReentrancyGuard, Ownable {
     using SafeERC20 for IERC20;
 
-    // Spark Protocol interfaces
+    // Spark Protocol interfaces - supports both real Spark pools and mock vaults for testnet
     IERC20 public immutable asset;
-    address public sparkPool; // Spark lending pool
-    address public sparkVault; // Spark ERC-4626 vault
+    address public sparkPool; // Spark lending pool (or mock)
+    address public sparkVault; // Spark ERC-4626 vault (or mock)
+    bool public useMockVault; // Flag to indicate if using mock vault
 
     // State
     string public constant override protocolName = "Spark Protocol";
@@ -48,9 +49,14 @@ contract SparkAdapter is IAdapter, ReentrancyGuard, Ownable {
         asset = IERC20(_asset);
         sparkPool = _sparkPool;
         sparkVault = _sparkVault;
+        useMockVault = true; // Assume mock for testnet by default
 
-        // Approve pool to spend assets
-        asset.safeApprove(_sparkPool, type(uint256).max);
+        // Approve pool/vault to spend assets (OpenZeppelin v5 uses forceApprove)
+        asset.forceApprove(_sparkPool, type(uint256).max);
+        // Also approve vault if different from pool
+        if (_sparkVault != _sparkPool) {
+            asset.forceApprove(_sparkVault, type(uint256).max);
+        }
     }
 
     /**

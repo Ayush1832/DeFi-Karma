@@ -15,10 +15,11 @@ import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 contract KalaniStrategy is IAdapter, ReentrancyGuard, Ownable {
     using SafeERC20 for IERC20;
 
-    // Yearn v3 / Kalani interfaces
+    // Yearn v3 / Kalani interfaces - supports both real Yearn strategies and mock vaults for testnet
     IERC20 public immutable asset;
-    address public strategy; // Yearn v3 tokenized strategy
-    address public vault; // Yearn vault
+    address public strategy; // Yearn v3 tokenized strategy (or mock)
+    address public vault; // Yearn vault (ERC-4626 or mock)
+    bool public useMockVault; // Flag to indicate if using mock vault
 
     // State
     string public constant override protocolName = "Kalani (Yearn v3)";
@@ -51,8 +52,10 @@ contract KalaniStrategy is IAdapter, ReentrancyGuard, Ownable {
         asset = IERC20(_asset);
         strategy = _strategy;
         vault = _vault;
+        useMockVault = true; // Assume mock for testnet by default
 
-        asset.safeApprove(_vault, type(uint256).max);
+        // Approve vault to spend assets (OpenZeppelin v5 uses forceApprove)
+        asset.forceApprove(_vault, type(uint256).max);
         lastCompoundTime = block.timestamp;
     }
 

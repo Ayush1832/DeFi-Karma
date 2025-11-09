@@ -1,21 +1,31 @@
-# DeFi Karma Smart Contracts
+# DeFi Karma - Smart Contracts
 
-This directory contains all smart contracts for the DeFi Karma protocol.
+DeFi yield orchestration protocol that aggregates yield from multiple DeFi protocols (Aave v3, Morpho v2, Spark, Kalani/Yearn v3) into an ERC-4626 compatible vault and programmatically donates a share of the yield to public goods.
 
-## Structure
+## Overview
 
-- `src/` - Main contract source files
-  - `KarmaVault.sol` - Core ERC-4626 vault
-  - `adapters/` - Protocol adapters
-    - `AaveAdapter.sol`
-    - `MorphoAdapter.sol`
-    - `SparkAdapter.sol`
-    - `KalaniStrategy.sol`
-  - `YieldRouter.sol` - Yield allocation and donation routing
-  - `hooks/` - Uniswap v4 hooks
-    - `ImpactHook.sol`
-- `test/` - Hardhat tests
-- `scripts/` - Deployment scripts
+This project implements a complete DeFi yield aggregation system with:
+- **KarmaVault**: ERC-4626 vault that aggregates yield from multiple protocols
+- **YieldRouter**: Routes harvested yield between users and public goods
+- **ImpactHook**: Executes donations to public goods recipients
+- **Adapters**: Protocol-specific adapters for Aave, Morpho, Spark, and Yearn
+- **Mock Vaults**: Testnet mock vaults for protocols not deployed on Sepolia
+
+## Contracts
+
+### Core Contracts
+- `KarmaVault.sol` - Main ERC-4626 vault
+- `YieldRouter.sol` - Yield routing and donation logic
+- `ImpactHook.sol` - Public goods donation execution
+
+### Adapters
+- `AaveAdapter.sol` - Aave v3 integration
+- `MorphoAdapter.sol` - Morpho v2 integration (uses mock vault on testnet)
+- `SparkAdapter.sol` - Spark Protocol integration (uses mock vault on testnet)
+- `KalaniStrategy.sol` - Yearn v3/Kalani integration (uses mock vault on testnet)
+
+### Mocks
+- `MockYieldProtocol.sol` - Mock ERC-4626 vault for testnet protocols
 
 ## Setup
 
@@ -24,103 +34,80 @@ This directory contains all smart contracts for the DeFi Karma protocol.
 npm install
 ```
 
-2. Compile contracts:
+2. Create `.env` file:
+```env
+PRIVATE_KEY=your_private_key
+SEPOLIA_RPC_URL=https://sepolia.infura.io/v3/your_key
+ETHERSCAN_API_KEY=your_etherscan_key
+```
+
+3. Compile contracts:
 ```bash
 npm run compile
 ```
 
-3. Run tests:
-```bash
-npm test
-```
-
-4. Run tests with coverage:
-```bash
-npm run test:coverage
-```
-
 ## Deployment
 
-### Local Network
-
-```bash
-npx hardhat node
-```
-
-In another terminal:
+Deploy to Sepolia:
 ```bash
 npm run deploy:sepolia
 ```
 
-### Testnet Deployment
-
-1. Create `.env` file with:
-```env
-PRIVATE_KEY=your-private-key
-SEPOLIA_RPC_URL=https://sepolia.infura.io/v3/your-key
-ETHERSCAN_API_KEY=your-etherscan-api-key
-```
-
-2. Deploy to Sepolia:
-```bash
-npm run deploy:sepolia
-```
-
-3. Deploy to Holesky:
-```bash
-npm run deploy:holesky
-```
-
-## Verification
-
-After deployment, verify contracts on Etherscan:
-
-```bash
-npx hardhat verify --network sepolia <CONTRACT_ADDRESS> <CONSTRUCTOR_ARGS>
-```
+This will:
+- Deploy mock vaults for Morpho, Spark, and Yearn
+- Deploy all core contracts
+- Deploy all adapters
+- Configure the vault with adapters
+- Automatically verify all contracts on Etherscan
+- Update frontend `.env.local` with addresses
 
 ## Testing
 
-Tests are written using Hardhat, Chai, and Mocha. Run all tests:
-
+Run tests:
 ```bash
 npm test
 ```
 
-Run specific test file:
-```bash
-npx hardhat test test/KarmaVault.test.ts
+## Network Support
+
+- **Sepolia Testnet**: Fully supported with mock vaults for protocols not on testnet
+- **Mainnet**: Ready for deployment (update addresses in deploy script)
+
+## Protocol Integration
+
+### Aave v3
+- Uses real Aave v3 pool addresses on Sepolia
+- Integrates with aUSDC tokens
+
+### Morpho v2
+- Uses mock vault on testnet (real Morpho not on Sepolia)
+- Adapter supports both real and mock vaults
+
+### Spark Protocol
+- Uses mock vault on testnet (real Spark not on Sepolia)
+- Adapter supports both real and mock vaults
+
+### Yearn v3 / Kalani
+- Uses mock vault on testnet (real Yearn v3 not on Sepolia)
+- Adapter supports both real and mock vaults
+
+## Architecture
+
 ```
-
-Run tests with gas reporting:
-```bash
-REPORT_GAS=true npm test
+User Deposits
+    ↓
+KarmaVault (ERC-4626)
+    ↓
+Adapters (Aave, Morpho, Spark, Yearn)
+    ↓
+Yield Generation
+    ↓
+YieldRouter
+    ↓
+80% Users | 20% Public Goods
+    ↓
+ImpactHook → Donations
 ```
-
-## Contracts
-
-### KarmaVault
-Core ERC-4626 vault that manages deposits, withdrawals, and yield aggregation.
-
-### YieldRouter
-Routes harvested yield between users (80%) and donations (20%).
-
-### ImpactHook
-Executes donations to public goods recipients via Uniswap.
-
-### Adapters
-- AaveAdapter: Aave v3 integration
-- MorphoAdapter: Morpho v2 integration
-- SparkAdapter: Spark Protocol integration
-- KalaniStrategy: Yearn v3 integration
-
-## Security
-
-- Reentrancy guards on all external functions
-- Access control for admin functions
-- Safe math operations (OpenZeppelin)
-- Comprehensive test coverage
-- Emergency pause functionality
 
 ## License
 

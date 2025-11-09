@@ -10,21 +10,22 @@ import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 /**
  * @title MorphoAdapter
  * @notice Adapter for Morpho v2 yield optimization protocol
- * @dev Integrates with Morpho v2 vaults for optimized lending yields
+ * @dev Integrates with Morpho v2 vaults (or mock vaults on testnet) for optimized lending yields
  */
 contract MorphoAdapter is IAdapter, ReentrancyGuard, Ownable {
     using SafeERC20 for IERC20;
 
-    // Morpho v2 interfaces
+    // Morpho v2 interfaces - supports both real Morpho vaults and mock vaults for testnet
     IERC20 public immutable asset;
-    address public morphoVault; // Morpho ERC-4626 vault
-    address public morphoMarket;
+    address public morphoVault; // Morpho ERC-4626 vault (or mock vault)
+    address public morphoMarket; // Optional: market address for real Morpho
 
     // State
     string public constant override protocolName = "Morpho v2";
     uint256 private _totalAssets;
     uint256 private _totalSupply;
     uint256 public yieldMultiplier = 110; // 110% of base yield (10% optimization)
+    bool public useMockVault; // Flag to indicate if using mock vault
 
     // Events
     event Deposited(uint256 amount, uint256 shares);
@@ -45,18 +46,19 @@ contract MorphoAdapter is IAdapter, ReentrancyGuard, Ownable {
     ) Ownable(msg.sender) {
         require(_asset != address(0), "Invalid asset");
         require(_morphoVault != address(0), "Invalid vault");
-        require(_morphoMarket != address(0), "Invalid market");
+        // morphoMarket can be zero address for mock vaults
 
         asset = IERC20(_asset);
         morphoVault = _morphoVault;
         morphoMarket = _morphoMarket;
+        useMockVault = (_morphoMarket == address(0)); // If no market, assume mock
 
-        // Approve vault to spend assets
-        asset.safeApprove(_morphoVault, type(uint256).max);
+        // Approve vault to spend assets (OpenZeppelin v5 uses forceApprove)
+        asset.forceApprove(_morphoVault, type(uint256).max);
     }
 
     /**
-     * @notice Deposits assets into Morpho
+     * @notice Deposits assets into Morpho (or mock vault)
      * @param amount Amount of assets to deposit
      * @return shares Amount of adapter shares received
      */
@@ -66,8 +68,9 @@ contract MorphoAdapter is IAdapter, ReentrancyGuard, Ownable {
         // Transfer assets from caller
         asset.safeTransferFrom(msg.sender, address(this), amount);
 
-        // Deposit to Morpho (simplified for hackathon)
-        // In production: use Morpho vault deposit
+        // For hackathon: Simplified deposit tracking
+        // In production: integrate with real Morpho vault or mock vault
+        // The adapter tracks deposits internally and simulates yield
         shares = amount; // 1:1 for simplicity
 
         // Update state

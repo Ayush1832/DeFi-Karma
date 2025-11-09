@@ -21,8 +21,8 @@ contract ImpactHook is IImpactHook, ReentrancyGuard, Ownable {
     address public swapRouter; // Uniswap router (v3/v4)
     address public weth; // WETH address for swaps
 
-    uint256 public totalDonated;
-    uint256 public donationCount;
+    uint256 public _totalDonated;
+    uint256 public _donationCount;
     uint256 public constant MAX_SLIPPAGE = 100; // 1% max slippage in basis points
 
     // Events
@@ -55,9 +55,9 @@ contract ImpactHook is IImpactHook, ReentrancyGuard, Ownable {
         swapRouter = _swapRouter;
         weth = _weth;
 
-        // Approve router to spend assets
-        asset.safeApprove(_swapRouter, type(uint256).max);
-        IERC20(_weth).safeApprove(_swapRouter, type(uint256).max);
+        // Approve router to spend assets (OpenZeppelin v5 uses forceApprove)
+        asset.forceApprove(_swapRouter, type(uint256).max);
+        IERC20(_weth).forceApprove(_swapRouter, type(uint256).max);
     }
 
     /**
@@ -111,8 +111,8 @@ contract ImpactHook is IImpactHook, ReentrancyGuard, Ownable {
         }
 
         // Update state
-        totalDonated += totalDistributed;
-        donationCount++;
+        _totalDonated += totalDistributed;
+        _donationCount++;
 
         // In production, emit swap event if swap occurred
         // emit SwapExecuted(address(asset), weth, amount, ethAmount);
@@ -123,7 +123,7 @@ contract ImpactHook is IImpactHook, ReentrancyGuard, Ownable {
      * @return Total donated amount
      */
     function totalDonated() external view override returns (uint256) {
-        return totalDonated;
+        return _totalDonated;
     }
 
     /**
@@ -131,7 +131,7 @@ contract ImpactHook is IImpactHook, ReentrancyGuard, Ownable {
      * @return Number of donations executed
      */
     function donationCount() external view override returns (uint256) {
-        return donationCount;
+        return _donationCount;
     }
 
     /**
@@ -143,9 +143,9 @@ contract ImpactHook is IImpactHook, ReentrancyGuard, Ownable {
         address oldRouter = swapRouter;
         swapRouter = _swapRouter;
         
-        // Re-approve new router
-        asset.safeApprove(_swapRouter, type(uint256).max);
-        IERC20(weth).safeApprove(_swapRouter, type(uint256).max);
+        // Re-approve new router (OpenZeppelin v5 uses forceApprove)
+        asset.forceApprove(_swapRouter, type(uint256).max);
+        IERC20(weth).forceApprove(_swapRouter, type(uint256).max);
 
         emit RouterUpdated(oldRouter, _swapRouter);
     }

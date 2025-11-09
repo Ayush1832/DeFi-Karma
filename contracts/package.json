@@ -8,7 +8,9 @@
     "test:coverage": "hardhat coverage",
     "deploy:sepolia": "hardhat run scripts/deploy.ts --network sepolia",
     "deploy:holesky": "hardhat run scripts/deploy.ts --network holesky",
-    "verify": "hardhat verify --network"
+    "test:deployed": "hardhat run scripts/test-deployed.ts --network sepolia",
+    "test:interactions": "hardhat run scripts/test-interactions.ts --network sepolia",
+    "test:all": "npm run test:deployed && npm run test:interactions"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^4.0.0",

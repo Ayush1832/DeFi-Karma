@@ -1,0 +1,127 @@
+{
+  "timestamp": "2025-11-09T15:51:37.118Z",
+  "network": "sepolia",
+  "results": [
+    {
+      "test": "1.1",
+      "status": "PASS",
+      "message": "KarmaVault deployed at 0xBF956a6FBEA391E7223189Fc714893BD7AA1224B"
+    },
+    {
+      "test": "1.2",
+      "status": "PASS",
+      "message": "YieldRouter deployed at 0x1F778a23bf953B00796D1702e7fDF89Bb763522b"
+    },
+    {
+      "test": "1.3",
+      "status": "PASS",
+      "message": "ImpactHook deployed at 0x8a9FFac4C195F78a0B42166cE967842601D144A1"
+    },
+    {
+      "test": "2.1",
+      "status": "PASS",
+      "message": "Vault router configured correctly"
+    },
+    {
+      "test": "2.2",
+      "status": "PASS",
+      "message": "Router hook configured correctly"
+    },
+    {
+      "test": "2.3",
+      "status": "PASS",
+      "message": "Donation ratio set to 20% (2000 bps)"
+    },
+    {
+      "test": "2.4",
+      "status": "PASS",
+      "message": "Recipients configured: 0x7d655c57..., 0xF29ff96A..."
+    },
+    {
+      "test": "3.1",
+      "status": "PASS",
+      "message": "Adapters configured: 4"
+    },
+    {
+      "test": "3.2",
+      "status": "PASS",
+      "message": "AaveAdapter deployed"
+    },
+    {
+      "test": "3.3",
+      "status": "PASS",
+      "message": "MorphoAdapter deployed"
+    },
+    {
+      "test": "3.4",
+      "status": "PASS",
+      "message": "SparkAdapter deployed"
+    },
+    {
+      "test": "3.5",
+      "status": "PASS",
+      "message": "KalaniStrategy deployed"
+    },
+    {
+      "test": "4.1",
+      "status": "PASS",
+      "message": "Vault metadata: DeFi Karma Vault (DKV)"
+    },
+    {
+      "test": "4.2",
+      "status": "PASS",
+      "message": "Vault asset configured correctly (USDC)"
+    },
+    {
+      "test": "4.3",
+      "status": "PASS",
+      "message": "Adapters: Aave v3, Morpho v2, Spark Protocol, Kalani (Yearn v3)"
+    },
+    {
+      "test": "4.4",
+      "status": "PASS",
+      "message": "Hook asset configured correctly (USDC)"
+    },
+    {
+      "test": "5.1",
+      "status": "PASS",
+      "message": "Vault total assets: 0.0 USDC"
+    },
+    {
+      "test": "5.2",
+      "status": "PASS",
+      "message": "Vault total supply: 0.0 DKV"
+    },
+    {
+      "test": "5.3",
+      "status": "PASS",
+      "message": "Adapter assets - Aave: 0, Morpho: 0, Spark: 0, Kalani: 0"
+    },
+    {
+      "test": "5.4",
+      "status": "PASS",
+      "message": "Recipients: 0x7d655c57f71464B6f83811C55D84009Cd9f5221C, 0xF29ff96AaEa6c9a1f2518514C55E2D4F4E8b4e2b"
+    },
+    {
+      "test": "6.1",
+      "status": "PASS",
+      "message": "Vault owner set correctly"
+    },
+    {
+      "test": "6.2",
+      "status": "PASS",
+      "message": "Router owner set correctly"
+    },
+    {
+      "test": "6.3",
+      "status": "PASS",
+      "message": "Hook owner set correctly"
+    }
+  ],
+  "summary": {
+    "total": 23,
+    "passed": 23,
+    "failed": 0,
+    "successRate": 100
+  }
+}
