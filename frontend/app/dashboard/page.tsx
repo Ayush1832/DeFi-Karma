@@ -1,11 +1,11 @@
 'use client';
 
 import { Navbar } from '@/components/Navbar';
-import { useAccount, useReadContract, useWriteContract } from 'wagmi';
+import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
 import { CONTRACT_ADDRESSES, VAULT_ABI, ERC20_ABI, ROUTER_ABI } from '@/lib/constants';
 import { formatCurrency, formatNumber } from '@/lib/utils';
 import { TrendingUp, DollarSign, Heart, Activity, ArrowUpRight, ArrowDownRight, Zap, Coins, Network, Wallet, Sparkles, BarChart3 } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Card3D } from '@/components/3DCard';
 import { AnimatedCounter } from '@/components/AnimatedCounter';
@@ -70,10 +70,25 @@ export default function Dashboard() {
     query: { enabled: !!address },
   });
 
-  const { writeContract: deposit, isPending: isDepositPending } = useWriteContract();
+  const { writeContract, data: depositHash, isPending: isDepositPending, error: depositError, reset: resetDeposit } = useWriteContract();
   const { writeContract: withdraw, isPending: isWithdrawPending } = useWriteContract();
   const { writeContract: harvest, isPending: isHarvestPending } = useWriteContract();
-  const { writeContract: approve } = useWriteContract();
+  const { writeContract: approve, data: approveHash, isPending: isApprovePending, error: approveError, reset: resetApprove } = useWriteContract();
+  
+  // Wait for approval transaction
+  const { isLoading: isApproving, isSuccess: isApproved } = useWaitForTransactionReceipt({
+    hash: approveHash,
+    query: { enabled: !!approveHash },
+  });
+  
+  // Wait for deposit transaction
+  const { isLoading: isDepositing, isSuccess: isDepositSuccess } = useWaitForTransactionReceipt({
+    hash: depositHash,
+    query: { enabled: !!depositHash },
+  });
+  
+  // Track if we're waiting for approval to complete
+  const [pendingDepositAmount, setPendingDepositAmount] = useState<string | null>(null);
 
   // Read router data
   const { data: totalDonated } = useReadContract({
@@ -82,28 +97,131 @@ export default function Dashboard() {
     functionName: 'totalDonated',
   });
 
+  // Check USDC allowance
+  const { data: allowance } = useReadContract({
+    address: CONTRACT_ADDRESSES.USDC,
+    abi: ERC20_ABI,
+    functionName: 'allowance',
+    args: address ? [address, CONTRACT_ADDRESSES.KARMA_VAULT] : undefined,
+    query: { enabled: !!address },
+  });
+
+  // Check USDC balance
+  const { data: usdcBalance } = useReadContract({
+    address: CONTRACT_ADDRESSES.USDC,
+    abi: ERC20_ABI,
+    functionName: 'balanceOf',
+    args: address ? [address] : undefined,
+    query: { enabled: !!address },
+  });
+
+  // Reset form after successful deposit
+  useEffect(() => {
+    if (isDepositSuccess) {
+      setDepositAmount('');
+      setPendingDepositAmount(null);
+      resetDeposit();
+    }
+  }, [isDepositSuccess, resetDeposit]);
+
   const handleDeposit = async () => {
-    if (!address || !depositAmount) return;
+    console.log('handleDeposit called', { address, depositAmount, usdcBalance, allowance });
+    
+    if (!address) {
+      alert('Please connect your wallet');
+      return;
+    }
+    
+    if (!depositAmount || depositAmount.trim() === '') {
+      alert('Please enter an amount');
+      return;
+    }
+
     try {
-      const amount = BigInt(parseFloat(depositAmount) * 1e6);
-      // First approve USDC spending
-      await approve({
-        address: CONTRACT_ADDRESSES.USDC,
-        abi: ERC20_ABI,
-        functionName: 'approve',
-        args: [CONTRACT_ADDRESSES.KARMA_VAULT, amount],
-      });
-      // Then deposit
-      deposit({
-        address: CONTRACT_ADDRESSES.KARMA_VAULT,
-        abi: VAULT_ABI,
-        functionName: 'deposit',
-        args: [amount, address],
-      });
-    } catch (error) {
+      const amountValue = parseFloat(depositAmount);
+      
+      // Validate amount
+      if (isNaN(amountValue) || amountValue <= 0) {
+        alert('Please enter a valid amount greater than 0');
+        return;
+      }
+
+      const amount = BigInt(Math.floor(amountValue * 1e6));
+      console.log('Deposit amount:', { amountValue, amount });
+
+      // Check balance
+      if (usdcBalance) {
+        const balance = BigInt(usdcBalance.toString());
+        console.log('Balance check:', { balance, amount, hasEnough: balance >= amount });
+        if (amount > balance) {
+          alert(`Insufficient USDC balance. You have ${formatCurrency(Number(balance) / 1e6)} USDC`);
+          return;
+        }
+      }
+
+      // Reset any previous errors
+      resetDeposit();
+      resetApprove();
+
+      // Check if approval is needed
+      const currentAllowance = allowance ? BigInt(allowance.toString()) : BigInt(0);
+      console.log('Allowance check:', { currentAllowance, amount, needsApproval: currentAllowance < amount });
+      
+      if (currentAllowance < amount) {
+        // Store the deposit amount to use after approval
+        setPendingDepositAmount(depositAmount);
+        
+        console.log('Requesting approval...', {
+          token: CONTRACT_ADDRESSES.USDC,
+          spender: CONTRACT_ADDRESSES.KARMA_VAULT,
+          amount: amount.toString(),
+        });
+        
+        // First approve USDC spending
+        approve({
+          address: CONTRACT_ADDRESSES.USDC,
+          abi: ERC20_ABI,
+          functionName: 'approve',
+          args: [CONTRACT_ADDRESSES.KARMA_VAULT, amount],
+        });
+      } else {
+        // Already approved, proceed with deposit directly
+        console.log('Depositing directly...', {
+          vault: CONTRACT_ADDRESSES.KARMA_VAULT,
+          amount: amount.toString(),
+          receiver: address,
+        });
+        
+        writeContract({
+          address: CONTRACT_ADDRESSES.KARMA_VAULT,
+          abi: VAULT_ABI,
+          functionName: 'deposit',
+          args: [amount, address],
+        });
+      }
+    } catch (error: any) {
       console.error('Deposit error:', error);
+      const errorMessage = error?.message || error?.toString() || 'Unknown error';
+      alert(`Error: ${errorMessage}`);
     }
   };
+
+  // Auto-deposit after approval is confirmed
+  useEffect(() => {
+    if (isApproved && pendingDepositAmount && address && !depositHash) {
+      const amount = BigInt(Math.floor(parseFloat(pendingDepositAmount) * 1e6));
+      if (amount > BigInt(0)) {
+        writeContract({
+          address: CONTRACT_ADDRESSES.KARMA_VAULT,
+          abi: VAULT_ABI,
+          functionName: 'deposit',
+          args: [amount, address],
+        });
+        // Clear pending amount after initiating deposit
+        setPendingDepositAmount(null);
+      }
+    }
+  }, [isApproved, pendingDepositAmount, address, writeContract, depositHash]);
 
   const handleWithdraw = () => {
     if (!address || !withdrawAmount) return;
@@ -271,28 +389,62 @@ export default function Dashboard() {
                   onChange={(e) => setDepositAmount(e.target.value)}
                   className="w-full px-6 py-4 bg-[#1a2332] border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg font-medium mb-4"
                 />
-                <button
-                  onClick={handleDeposit}
-                  disabled={isDepositPending || !depositAmount}
-                  className="w-full px-6 py-4 bg-gradient-to-r from-[#00C6FF] to-[#0072FF] text-white rounded-xl font-semibold text-lg hover:from-[#00D4FF] hover:to-[#0080FF] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 flex items-center justify-center gap-2"
-                >
-                  {isDepositPending ? (
-                    <>
-                      <motion.div
-                        animate={{ rotate: 360 }}
-                        transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                {(depositError || approveError) && (
+                  <div className="mb-4 p-4 bg-red-500/10 border border-red-500/30 rounded-xl text-red-400 text-sm">
+                    Error: {(depositError || approveError)?.message || 'Transaction failed'}
+                  </div>
+                )}
+                {usdcBalance && (
+                  <div className="mb-2 text-sm text-white/60">
+                    Your Balance: {formatCurrency(Number(usdcBalance) / 1e6)} USDC
+                  </div>
+                )}
+                <div>
+                  {(() => {
+                    const amountValue = depositAmount ? parseFloat(depositAmount) : 0;
+                    const amount = depositAmount ? BigInt(Math.floor(amountValue * 1e6)) : BigInt(0);
+                    const isProcessing = isDepositPending || isApprovePending || isApproving || isDepositing;
+                    const hasInsufficientBalance = usdcBalance && depositAmount && amountValue > 0
+                      ? amount > BigInt(usdcBalance.toString())
+                      : false;
+                    const currentAllowance = allowance ? BigInt(allowance.toString()) : BigInt(0);
+                    const needsApproval = depositAmount && amountValue > 0
+                      ? currentAllowance < amount
+                      : false;
+                    const isDisabled = isProcessing || !depositAmount || amountValue <= 0 || hasInsufficientBalance;
+                    
+                    return (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          console.log('Button clicked', { depositAmount, isDisabled, isProcessing });
+                          handleDeposit();
+                        }}
+                        disabled={isDisabled}
+                        className="w-full px-6 py-4 bg-gradient-to-r from-[#00C6FF] to-[#0072FF] text-white rounded-xl font-semibold text-lg hover:from-[#00D4FF] hover:to-[#0080FF] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 flex items-center justify-center gap-2"
                       >
-                        <ArrowUpRight className="w-5 h-5" />
-                      </motion.div>
-                      Processing...
-                    </>
-                  ) : (
-                    <>
-                      <ArrowUpRight className="w-5 h-5" />
-                      Deposit Now
-                    </>
-                  )}
-                </button>
+                        {isProcessing ? (
+                          <>
+                            <motion.div
+                              animate={{ rotate: 360 }}
+                              transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                            >
+                              <ArrowUpRight className="w-5 h-5" />
+                            </motion.div>
+                            {isApprovePending || isApproving ? 'Approving...' : isDepositing ? 'Depositing...' : 'Processing...'}
+                          </>
+                        ) : (
+                          <>
+                            <ArrowUpRight className="w-5 h-5" />
+                            {needsApproval ? 'Approve & Deposit' : 'Deposit Now'}
+                          </>
+                        )}
+                      </button>
+                    );
+                  })()}
+                </div>
               </motion.div>
             )}
 

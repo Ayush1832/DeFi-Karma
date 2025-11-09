@@ -20,9 +20,11 @@ export default function RootLayout({
     <html lang="en" className="dark" suppressHydrationWarning>
       <body className={inter.className} suppressHydrationWarning>
         {/* Suppress telemetry script errors - runs before interactive */}
+        {/* This script suppresses errors that webpack replacement might miss */}
         <Script
           id="suppress-telemetry-errors"
           strategy="beforeInteractive"
+          key="suppress-telemetry"
           dangerouslySetInnerHTML={{
             __html: `
               (function() {

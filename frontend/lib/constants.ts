@@ -1,4 +1,6 @@
 // Contract addresses (Sepolia)
+import { parseAbi } from 'viem';
+
 export const CONTRACT_ADDRESSES = {
   KARMA_VAULT: (process.env.NEXT_PUBLIC_VAULT_ADDRESS || '0xBF956a6FBEA391E7223189Fc714893BD7AA1224B') as `0x${string}`,
   YIELD_ROUTER: (process.env.NEXT_PUBLIC_ROUTER_ADDRESS || '0x1F778a23bf953B00796D1702e7fDF89Bb763522b') as `0x${string}`,
@@ -58,17 +60,17 @@ export const ADAPTERS = [
   },
 ] as const;
 
-// ERC20 ABI (for USDC approval)
-export const ERC20_ABI = [
+// ERC20 ABI (for USDC approval) - using parseAbi from viem for proper type inference
+export const ERC20_ABI = parseAbi([
   'function balanceOf(address owner) view returns (uint256)',
   'function decimals() view returns (uint8)',
   'function symbol() view returns (string)',
   'function approve(address spender, uint256 amount) returns (bool)',
   'function allowance(address owner, address spender) view returns (uint256)',
-] as const;
+]);
 
 // Vault ABI
-export const VAULT_ABI = [
+export const VAULT_ABI = parseAbi([
   'function deposit(uint256 assets, address receiver) returns (uint256 shares)',
   'function withdraw(uint256 assets, address receiver, address owner) returns (uint256 shares)',
   'function redeem(uint256 shares, address receiver, address owner) returns (uint256 assets)',
@@ -87,10 +89,10 @@ export const VAULT_ABI = [
   'event Withdraw(address indexed sender, address indexed receiver, address indexed owner, uint256 assets, uint256 shares)',
   'event YieldHarvested(uint256 totalYield, uint256 timestamp)',
   'event HarvestAndDonate(uint256 totalYield, uint256 donatedAmount, uint256 userShare)',
-] as const;
+]);
 
 // Router ABI
-export const ROUTER_ABI = [
+export const ROUTER_ABI = parseAbi([
   'function routeYield(uint256 amount)',
   'function executeDonation() returns (uint256 donatedAmount)',
   'function donationRatio() view returns (uint256)',
@@ -103,13 +105,13 @@ export const ROUTER_ABI = [
   'function totalUserShare() view returns (uint256)',
   'event YieldRouted(uint256 totalYield, uint256 userShare, uint256 donationAmount)',
   'event DonationExecuted(uint256 amount, address recipient, uint256 timestamp)',
-] as const;
+]);
 
 // Hook ABI
-export const HOOK_ABI = [
+export const HOOK_ABI = parseAbi([
   'function executeDonation(uint256 amount, address[] recipients, uint256[] allocations)',
   'function totalDonated() view returns (uint256)',
   'function donationCount() view returns (uint256)',
   'function asset() view returns (address)',
   'event ImpactDonation(uint256 amount, address recipient, uint256 timestamp)',
-] as const;
+]);
