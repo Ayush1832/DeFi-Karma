@@ -18,8 +18,8 @@ export default function DocsPage() {
           transition={{ duration: 0.6 }}
           className="mb-10"
         >
-          <h1 className="text-4xl md:text-5xl font-bold gradient-text mb-2">Documentation</h1>
-          <p className="text-gray-400 text-lg">
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-2">Documentation</h1>
+          <p className="text-white/70 text-lg">
             Learn how DeFi Karma works and how to interact with the protocol
           </p>
         </motion.div>
@@ -29,28 +29,28 @@ export default function DocsPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="glass-strong rounded-2xl p-8 mb-8 hover-lift"
+          className="card-dark mb-8"
         >
           <div className="flex items-center gap-3 mb-6">
-            <Code className="w-8 h-8 text-teal-400" />
+            <Code className="w-6 h-6 text-blue-400" />
             <h2 className="text-2xl font-bold text-white">Architecture</h2>
           </div>
           <div className="prose max-w-none">
-            <p className="text-gray-300 mb-4 leading-relaxed">
+            <p className="text-white/80 mb-4 leading-relaxed">
               DeFi Karma is built on a modular architecture that aggregates yield from multiple DeFi protocols
               and automatically routes a portion to public goods.
             </p>
-            <div className="glass rounded-xl p-6 my-4">
+            <div className="bg-[#1a2332] rounded-xl p-6 my-4 border border-white/10">
               <h3 className="font-bold text-white mb-4">Core Components</h3>
-              <ul className="space-y-3 text-gray-300">
+              <ul className="space-y-3 text-white/80">
                 <li className="flex items-start gap-3">
-                  <Network className="w-5 h-5 text-teal-400 mt-0.5 flex-shrink-0" />
+                  <Network className="w-5 h-5 text-blue-400 mt-0.5 flex-shrink-0" />
                   <div>
                     <strong className="text-white">KarmaVault (ERC-4626):</strong> Main vault that manages deposits, withdrawals, and adapter allocation
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
-                  <Zap className="w-5 h-5 text-purple-400 mt-0.5 flex-shrink-0" />
+                  <Zap className="w-5 h-5 text-blue-400 mt-0.5 flex-shrink-0" />
                   <div>
                     <strong className="text-white">YieldRouter:</strong> Routes harvested yield between users (80%) and donations (20%)
                   </div>
@@ -62,7 +62,7 @@ export default function DocsPage() {
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
-                  <Lock className="w-5 h-5 text-cyan-400 mt-0.5 flex-shrink-0" />
+                  <Lock className="w-5 h-5 text-blue-400 mt-0.5 flex-shrink-0" />
                   <div>
                     <strong className="text-white">Adapters:</strong> Protocol-specific integrations (Aave, Morpho, Spark, Yearn)
                   </div>
@@ -77,10 +77,10 @@ export default function DocsPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="glass-strong rounded-2xl p-8 mb-8 hover-lift"
+          className="card-dark mb-8"
         >
           <div className="flex items-center gap-3 mb-6">
-            <Book className="w-8 h-8 text-purple-400" />
+            <Book className="w-6 h-6 text-blue-400" />
             <h2 className="text-2xl font-bold text-white">Contract Addresses (Sepolia)</h2>
           </div>
           <div className="space-y-3">
@@ -90,20 +90,20 @@ export default function DocsPage() {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.4 + index * 0.05 }}
-                className="flex items-center justify-between p-4 glass rounded-xl hover-lift group"
+                className="flex items-center justify-between p-4 bg-[#1a2332] rounded-xl border border-white/10 group hover:border-white/20 transition-colors"
               >
-                <span className="font-medium text-gray-300 group-hover:text-white transition-colors">
+                <span className="font-medium text-white/80 group-hover:text-white transition-colors">
                   {name.replace(/_/g, ' ')}
                 </span>
                 <div className="flex items-center gap-3">
-                  <span className="font-mono text-sm text-gray-400 group-hover:text-teal-400 transition-colors">
+                  <span className="font-mono text-sm text-white/60 group-hover:text-blue-400 transition-colors">
                     {formatAddress(address)}
                   </span>
                   <Link
                     href={`https://sepolia.etherscan.io/address/${address}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-teal-400 hover:text-teal-300 transition-colors"
+                    className="text-blue-400 hover:text-blue-300 transition-colors"
                   >
                     <ExternalLink className="h-4 w-4" />
                   </Link>
@@ -118,10 +118,10 @@ export default function DocsPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="glass-strong rounded-2xl p-8 mb-8 hover-lift"
+          className="card-dark mb-8"
         >
           <div className="flex items-center gap-3 mb-6">
-            <Zap className="w-8 h-8 text-orange-400" />
+            <Zap className="w-6 h-6 text-blue-400" />
             <h2 className="text-2xl font-bold text-white">How It Works</h2>
           </div>
           <div className="space-y-6">
@@ -152,14 +152,14 @@ export default function DocsPage() {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.6 + index * 0.1 }}
-                className="flex items-start gap-4 p-4 glass rounded-xl"
+                className="flex items-start gap-4 p-4 bg-[#1a2332] rounded-xl border border-white/10"
               >
-                <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-gradient-to-br from-teal-500 to-purple-500 flex items-center justify-center font-bold text-white">
+                <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-gradient-blue flex items-center justify-center font-bold text-white">
                   {item.step}
                 </div>
                 <div>
                   <h3 className="font-bold text-white text-lg mb-2">{item.title}</h3>
-                  <p className="text-gray-400 leading-relaxed">{item.description}</p>
+                  <p className="text-white/70 leading-relaxed">{item.description}</p>
                 </div>
               </motion.div>
             ))}
@@ -171,34 +171,34 @@ export default function DocsPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.9 }}
-          className="glass-strong rounded-2xl p-8 mb-8 hover-lift"
+          className="card-dark mb-8"
         >
           <div className="flex items-center gap-3 mb-6">
-            <Shield className="w-8 h-8 text-blue-400" />
+            <Shield className="w-6 h-6 text-blue-400" />
             <h2 className="text-2xl font-bold text-white">ERC-4626 Standard</h2>
           </div>
           <div className="prose max-w-none">
-            <p className="text-gray-300 mb-4 leading-relaxed">
+            <p className="text-white/80 mb-4 leading-relaxed">
               KarmaVault implements the ERC-4626 tokenized vault standard, ensuring maximum composability
               with other DeFi protocols.
             </p>
-            <div className="glass rounded-xl p-6">
+            <div className="bg-[#1a2332] rounded-xl p-6 border border-white/10">
               <h3 className="font-bold text-white mb-4">Key Features</h3>
-              <ul className="space-y-3 text-gray-300">
+              <ul className="space-y-3 text-white/80">
                 <li className="flex items-start gap-3">
-                  <div className="w-2 h-2 rounded-full bg-teal-400 mt-2 flex-shrink-0"></div>
+                  <div className="w-2 h-2 rounded-full bg-blue-400 mt-2 flex-shrink-0"></div>
                   <span>Standardized deposit/withdraw interface</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <div className="w-2 h-2 rounded-full bg-teal-400 mt-2 flex-shrink-0"></div>
+                  <div className="w-2 h-2 rounded-full bg-blue-400 mt-2 flex-shrink-0"></div>
                   <span>Share-based accounting (1:1 with assets initially)</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <div className="w-2 h-2 rounded-full bg-teal-400 mt-2 flex-shrink-0"></div>
+                  <div className="w-2 h-2 rounded-full bg-blue-400 mt-2 flex-shrink-0"></div>
                   <span>Automatic yield accrual through share value increase</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <div className="w-2 h-2 rounded-full bg-teal-400 mt-2 flex-shrink-0"></div>
+                  <div className="w-2 h-2 rounded-full bg-blue-400 mt-2 flex-shrink-0"></div>
                   <span>Compatible with all ERC-4626 supporting protocols</span>
                 </li>
               </ul>
@@ -211,10 +211,10 @@ export default function DocsPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.0 }}
-          className="glass-strong rounded-2xl p-8 hover-lift"
+          className="card-dark"
         >
           <div className="flex items-center gap-3 mb-6">
-            <FileText className="w-8 h-8 text-cyan-400" />
+            <FileText className="w-6 h-6 text-blue-400" />
             <h2 className="text-2xl font-bold text-white">Resources</h2>
           </div>
           <div className="space-y-3">
@@ -234,10 +234,10 @@ export default function DocsPage() {
                   href={resource.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-3 p-4 glass rounded-xl hover-lift group"
+                  className="flex items-center gap-3 p-4 bg-[#1a2332] rounded-xl border border-white/10 group hover:border-white/20 transition-colors"
                 >
-                  <ExternalLink className="h-5 w-5 text-teal-400 group-hover:text-teal-300 transition-colors" />
-                  <span className="text-gray-300 group-hover:text-white transition-colors">{resource.name}</span>
+                  <ExternalLink className="h-5 w-5 text-blue-400 group-hover:text-blue-300 transition-colors" />
+                  <span className="text-white/80 group-hover:text-white transition-colors">{resource.name}</span>
                 </Link>
               </motion.div>
             ))}

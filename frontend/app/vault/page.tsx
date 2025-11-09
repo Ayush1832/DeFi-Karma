@@ -37,8 +37,8 @@ export default function VaultPage() {
           transition={{ duration: 0.6 }}
           className="mb-10"
         >
-          <h1 className="text-4xl md:text-5xl font-bold gradient-text mb-2">Vault Management</h1>
-          <p className="text-gray-400 text-lg">View and manage adapter allocations across multiple DeFi protocols</p>
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-2">Vault Management</h1>
+          <p className="text-white/70 text-lg">View and manage adapter allocations across multiple DeFi protocols</p>
         </motion.div>
 
         {/* Vault Overview */}
@@ -71,19 +71,16 @@ export default function VaultPage() {
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: card.delay, duration: 0.6 }}
-              className="glass-strong rounded-2xl p-6 hover-lift group relative overflow-hidden"
+              className="card-dark"
             >
-              <div className={`absolute inset-0 bg-gradient-to-br ${card.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-500`}></div>
-              <div className="relative z-10">
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-gray-400 text-sm font-medium">{card.label}</span>
-                  <div className={`p-2 rounded-lg bg-gradient-to-br ${card.gradient} opacity-80`}>
-                    <card.icon className="h-5 w-5 text-white" />
-                  </div>
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-white/70 text-sm font-medium">{card.label}</span>
+                <div className="p-2 rounded-lg bg-gradient-blue">
+                  <card.icon className="h-5 w-5 text-white" />
                 </div>
-                <div className={`text-3xl font-bold bg-gradient-to-r ${card.gradient} bg-clip-text text-transparent`}>
-                  {card.value}
-                </div>
+              </div>
+              <div className="text-3xl font-bold text-blue-gradient">
+                {card.value}
               </div>
             </motion.div>
           ))}
@@ -97,8 +94,8 @@ export default function VaultPage() {
             transition={{ delay: 0.4 }}
             className="mb-6"
           >
-            <h2 className="text-3xl font-bold gradient-text mb-2">Protocol Adapters</h2>
-            <p className="text-gray-400">Multi-protocol yield aggregation</p>
+            <h2 className="text-3xl font-bold text-white mb-2">Protocol Adapters</h2>
+            <p className="text-white/70">Multi-protocol yield aggregation</p>
           </motion.div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {ADAPTERS.map((adapter, index) => (
@@ -107,40 +104,20 @@ export default function VaultPage() {
                 initial={{ opacity: 0, y: 40 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 + index * 0.1, duration: 0.6 }}
-                className="glass-strong rounded-2xl p-6 hover-lift group relative overflow-hidden"
+                className="card-dark"
               >
-                <div className="absolute inset-0 bg-gradient-to-br from-teal-500/0 to-purple-500/0 group-hover:from-teal-500/10 group-hover:to-purple-500/10 transition-all duration-500"></div>
-                <div className="relative z-10">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-xl font-bold text-white">{adapter.name}</h3>
-                    <Network className="w-5 h-5 text-gray-400" />
+                <div className="flex items-center justify-between mb-4">
+                  <div className="p-2 rounded-lg bg-gradient-blue">
+                    <Network className="h-5 w-5 text-white" />
                   </div>
-                  <div className="space-y-4">
-                    <div>
-                      <div className="flex justify-between mb-2">
-                        <span className="text-gray-400 text-sm">Allocation</span>
-                        <span className="font-semibold text-white">{adapter.allocation}%</span>
-                      </div>
-                      <div className="w-full bg-white/10 rounded-full h-2 overflow-hidden">
-                        <motion.div
-                          initial={{ width: 0 }}
-                          animate={{ width: `${adapter.allocation}%` }}
-                          transition={{ delay: 0.6 + index * 0.1, duration: 1 }}
-                          className="h-2 rounded-full"
-                          style={{ backgroundColor: adapter.color }}
-                        />
-                      </div>
-                    </div>
-                    <div className="flex justify-between items-center pt-2 border-t border-white/10">
-                      <span className="text-gray-400 text-sm">APY</span>
-                      <span className="font-semibold text-teal-400">{adapter.apy}%</span>
-                    </div>
-                    <div className="pt-2 border-t border-white/10">
-                      <span className="text-gray-500 text-xs font-mono block truncate">
-                        {adapter.address.slice(0, 10)}...{adapter.address.slice(-8)}
-                      </span>
-                    </div>
-                  </div>
+                  <span className="px-3 py-1 rounded-full text-xs font-bold text-blue-gradient border border-blue-500/30 bg-blue-500/10">
+                    {adapter.allocation}%
+                  </span>
+                </div>
+                <h3 className="text-xl font-bold text-white mb-4">{adapter.name}</h3>
+                <div className="flex items-center justify-between pt-2 border-t border-white/10">
+                  <span className="text-white/50 text-sm">APY</span>
+                  <span className="text-lg font-bold text-blue-gradient">{adapter.apy}%</span>
                 </div>
               </motion.div>
             ))}

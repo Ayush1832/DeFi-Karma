@@ -129,22 +129,11 @@ export default function Dashboard() {
         <GlowEffect />
         <Navbar />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center min-h-screen flex items-center justify-center">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8, rotateY: -90 }}
-            animate={{ opacity: 1, scale: 1, rotateY: 0 }}
-            transition={{ duration: 0.8, type: 'spring' }}
-            className="glass-strong rounded-3xl p-12 max-w-2xl mx-auto border-2 border-teal-500/30 backdrop-blur-xl"
-          >
-            <motion.div
-              animate={{ rotate: 360, scale: [1, 1.2, 1] }}
-              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-              className="inline-block mb-6"
-            >
-              <Wallet className="w-20 h-20 text-teal-400" />
-            </motion.div>
-            <h1 className="text-4xl font-black gradient-text mb-4">Please Connect Your Wallet</h1>
-            <p className="text-gray-400 text-lg">Connect your wallet to view your dashboard and start earning yield</p>
-          </motion.div>
+          <div className="card-dark p-12 max-w-2xl mx-auto text-center">
+            <Wallet className="w-16 h-16 text-blue-400 mx-auto mb-6" />
+            <h1 className="text-3xl font-bold text-white mb-4">Please Connect Your Wallet</h1>
+            <p className="text-white/70 text-lg">Connect your wallet to view your dashboard and start earning yield</p>
+          </div>
         </div>
       </div>
     );
@@ -152,7 +141,6 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen animated-gradient relative overflow-hidden">
-      <GlowEffect />
       <Navbar />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
         <motion.div
@@ -161,18 +149,8 @@ export default function Dashboard() {
           transition={{ duration: 0.6 }}
           className="mb-10"
         >
-          <div className="flex items-center gap-4 mb-4">
-            <motion.div
-              animate={{ rotate: [0, 10, -10, 0] }}
-              transition={{ duration: 2, repeat: Infinity }}
-            >
-              <Sparkles className="w-10 h-10 text-teal-400" />
-            </motion.div>
-            <div>
-              <h1 className="text-5xl md:text-6xl font-black gradient-text mb-2">Dashboard</h1>
-              <p className="text-gray-400 text-xl">Monitor your yield and impact in real-time</p>
-            </div>
-          </div>
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-2">Dashboard</h1>
+          <p className="text-white/70 text-lg">Monitor your yield and impact in real-time</p>
         </motion.div>
 
         {/* Portfolio Cards with 3D Effect */}
@@ -223,39 +201,27 @@ export default function Dashboard() {
               whileHover={{ y: -10, scale: 1.02 }}
               className="perspective"
             >
-              <Card3D className="glass-strong rounded-3xl p-6 hover-lift group relative overflow-hidden border border-white/10 backdrop-blur-xl h-full">
-                <div className={`absolute inset-0 bg-gradient-to-br ${card.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-500`}></div>
-                <div className="relative z-10">
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="text-gray-400 text-sm font-semibold">{card.label}</span>
-                    <motion.div
-                      className={`p-3 rounded-xl bg-gradient-to-br ${card.gradient} shadow-2xl`}
-                      whileHover={{ rotate: 360, scale: 1.1 }}
-                      transition={{ duration: 0.6 }}
-                    >
-                      <card.icon className="h-6 w-6 text-white" />
-                    </motion.div>
+              <div className="card-dark group relative overflow-hidden h-full">
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-white/70 text-sm font-medium">{card.label}</span>
+                  <div className={`p-2 rounded-lg bg-gradient-to-br ${card.gradient}`}>
+                    <card.icon className="h-5 w-5 text-white" />
                   </div>
-                  <div className={`text-4xl font-black bg-gradient-to-r ${card.gradient} bg-clip-text text-transparent mb-2`}>
-                    <AnimatedCounter 
-                      value={card.value} 
-                      prefix={card.prefix || ''} 
-                      suffix={card.suffix || ''}
-                      decimals={card.suffix ? 1 : 0}
-                    />
-                  </div>
-                  <motion.div
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: card.delay + 0.3 }}
-                    className="flex items-center gap-2 text-sm"
-                  >
-                    <TrendingUp className="w-4 h-4 text-green-400" />
-                    <span className="text-green-400 font-semibold">{card.change}</span>
-                    <span className="text-gray-500">vs last week</span>
-                  </motion.div>
                 </div>
-              </Card3D>
+                <div className={`text-4xl font-bold text-blue-gradient mb-2`}>
+                  <AnimatedCounter 
+                    value={card.value} 
+                    prefix={card.prefix || ''} 
+                    suffix={card.suffix || ''}
+                    decimals={card.suffix ? 1 : 0}
+                  />
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <TrendingUp className="w-4 h-4 text-green-400" />
+                  <span className="text-green-400 font-medium">{card.change}</span>
+                  <span className="text-white/50">vs last week</span>
+                </div>
+              </div>
             </motion.div>
           ))}
         </div>
@@ -265,48 +231,26 @@ export default function Dashboard() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="glass-strong rounded-3xl p-8 mb-10 backdrop-blur-xl border border-white/10"
+          className="card-dark p-8 mb-10"
         >
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
             {[
-              { id: 'deposit' as const, label: 'Deposit', icon: ArrowUpRight, gradient: 'from-teal-500 to-cyan-500', glow: 'btn-glow-teal' },
-              { id: 'withdraw' as const, label: 'Withdraw', icon: ArrowDownRight, gradient: 'from-purple-500 to-pink-500', glow: 'btn-glow-purple' },
-              { id: 'harvest' as const, label: 'Harvest', icon: Zap, gradient: 'from-yellow-500 to-orange-500', glow: 'btn-glow-teal' },
+              { id: 'deposit' as const, label: 'Deposit', icon: ArrowUpRight },
+              { id: 'withdraw' as const, label: 'Withdraw', icon: ArrowDownRight },
+              { id: 'harvest' as const, label: 'Harvest', icon: Zap },
             ].map((tab) => (
-              <motion.button
+              <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                whileHover={{ scale: 1.05, y: -2 }}
-                whileTap={{ scale: 0.98 }}
-                className={`relative px-8 py-5 rounded-2xl font-black text-lg transition-all duration-300 btn-ripple overflow-hidden ${
+                className={`px-6 py-4 rounded-xl font-semibold text-lg transition-all duration-300 flex items-center justify-center gap-2 ${
                   activeTab === tab.id
-                    ? `bg-gradient-to-r ${tab.gradient} text-white shadow-2xl ${tab.glow}`
-                    : 'btn-secondary text-gray-400 hover:text-white hover:border-teal-500/50'
+                    ? 'bg-gradient-to-r from-[#00C6FF] to-[#0072FF] text-white shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50'
+                    : 'bg-[#1a2332] text-white/70 hover:text-white hover:bg-[#1f2a3a] border border-white/10 hover:border-white/20'
                 }`}
               >
-                <div className="relative z-10 flex items-center justify-center gap-3">
-                  <motion.div
-                    animate={activeTab === tab.id ? { rotate: [0, 10, -10, 0] } : {}}
-                    transition={{ duration: 2, repeat: Infinity }}
-                  >
-                    <tab.icon className="w-6 h-6" />
-                  </motion.div>
-                  <span className="tracking-wide">{tab.label}</span>
-                </div>
-                {activeTab === tab.id && (
-                  <motion.div
-                    className="absolute inset-0 bg-white/20"
-                    animate={{
-                      x: ['-100%', '100%'],
-                    }}
-                    transition={{
-                      duration: 2,
-                      repeat: Infinity,
-                      repeatType: 'reverse',
-                    }}
-                  />
-                )}
-              </motion.button>
+                <tab.icon className="w-5 h-5" />
+                {tab.label}
+              </button>
             ))}
           </div>
 
@@ -325,34 +269,30 @@ export default function Dashboard() {
                   placeholder="Amount (USDC)"
                   value={depositAmount}
                   onChange={(e) => setDepositAmount(e.target.value)}
-                  className="w-full px-6 py-4 bg-white/5 border-2 border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 text-lg font-semibold"
+                  className="w-full px-6 py-4 bg-[#1a2332] border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg font-medium mb-4"
                 />
-                <motion.button
+                <button
                   onClick={handleDeposit}
                   disabled={isDepositPending || !depositAmount}
-                  whileHover={{ scale: 1.02, y: -2 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="w-full px-8 py-5 bg-gradient-to-r from-teal-500 to-cyan-500 text-white rounded-2xl font-black text-lg hover:from-teal-400 hover:to-cyan-400 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed btn-primary btn-glow-teal btn-ripple shadow-2xl disabled:hover:scale-100 disabled:hover:y-0"
+                  className="w-full px-6 py-4 bg-gradient-to-r from-[#00C6FF] to-[#0072FF] text-white rounded-xl font-semibold text-lg hover:from-[#00D4FF] hover:to-[#0080FF] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 flex items-center justify-center gap-2"
                 >
-                  <span className="flex items-center justify-center gap-3">
-                    {isDepositPending ? (
-                      <>
-                        <motion.div
-                          animate={{ rotate: 360 }}
-                          transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-                        >
-                          <ArrowUpRight className="w-5 h-5" />
-                        </motion.div>
-                        Processing...
-                      </>
-                    ) : (
-                      <>
-                        <ArrowUpRight className="w-6 h-6" />
-                        Deposit Now
-                      </>
-                    )}
-                  </span>
-                </motion.button>
+                  {isDepositPending ? (
+                    <>
+                      <motion.div
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                      >
+                        <ArrowUpRight className="w-5 h-5" />
+                      </motion.div>
+                      Processing...
+                    </>
+                  ) : (
+                    <>
+                      <ArrowUpRight className="w-5 h-5" />
+                      Deposit Now
+                    </>
+                  )}
+                </button>
               </motion.div>
             )}
 
@@ -370,34 +310,30 @@ export default function Dashboard() {
                   placeholder="Amount (USDC)"
                   value={withdrawAmount}
                   onChange={(e) => setWithdrawAmount(e.target.value)}
-                  className="w-full px-6 py-4 bg-white/5 border-2 border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-lg font-semibold"
+                  className="w-full px-6 py-4 bg-[#1a2332] border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg font-medium mb-4"
                 />
-                <motion.button
+                <button
                   onClick={handleWithdraw}
                   disabled={isWithdrawPending || !withdrawAmount}
-                  whileHover={{ scale: 1.02, y: -2 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="w-full px-8 py-5 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-2xl font-black text-lg hover:from-purple-400 hover:to-pink-400 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed btn-gradient btn-glow-purple btn-ripple shadow-2xl disabled:hover:scale-100 disabled:hover:y-0"
+                  className="w-full px-6 py-4 bg-gradient-to-r from-[#00C6FF] to-[#0072FF] text-white rounded-xl font-semibold text-lg hover:from-[#00D4FF] hover:to-[#0080FF] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 flex items-center justify-center gap-2"
                 >
-                  <span className="flex items-center justify-center gap-3">
-                    {isWithdrawPending ? (
-                      <>
-                        <motion.div
-                          animate={{ rotate: 360 }}
-                          transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-                        >
-                          <ArrowDownRight className="w-5 h-5" />
-                        </motion.div>
-                        Processing...
-                      </>
-                    ) : (
-                      <>
-                        <ArrowDownRight className="w-6 h-6" />
-                        Withdraw Now
-                      </>
-                    )}
-                  </span>
-                </motion.button>
+                  {isWithdrawPending ? (
+                    <>
+                      <motion.div
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                      >
+                        <ArrowDownRight className="w-5 h-5" />
+                      </motion.div>
+                      Processing...
+                    </>
+                  ) : (
+                    <>
+                      <ArrowDownRight className="w-5 h-5" />
+                      Withdraw Now
+                    </>
+                  )}
+                </button>
               </motion.div>
             )}
 
@@ -410,71 +346,41 @@ export default function Dashboard() {
                 transition={{ duration: 0.3 }}
                 className="space-y-4"
               >
-                <div className="glass rounded-xl p-6 mb-4">
-                  <p className="text-gray-300 mb-2 font-semibold">Harvest yield and automatically donate to public goods</p>
-                  <div className="flex items-center gap-4 text-sm text-gray-400">
+                <div className="bg-[#1a2332] rounded-xl p-6 mb-4 border border-white/10">
+                  <p className="text-white mb-3 font-medium">Harvest yield and automatically donate to public goods</p>
+                  <div className="flex items-center gap-4 text-sm text-white/70">
                     <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 bg-teal-400 rounded-full"></div>
+                      <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
                       <span>80% to vault users</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
+                      <div className="w-2 h-2 bg-cyan-400 rounded-full"></div>
                       <span>20% to public goods</span>
                     </div>
                   </div>
                 </div>
-                <motion.button
+                <button
                   onClick={handleHarvest}
                   disabled={isHarvestPending}
-                  whileHover={{ scale: 1.02, y: -2 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="w-full px-8 py-6 bg-gradient-to-r from-teal-500 via-purple-500 to-pink-500 text-white rounded-2xl font-black text-xl hover:opacity-90 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed btn-glow-teal btn-ripple shadow-2xl relative overflow-hidden disabled:hover:scale-100 disabled:hover:y-0"
+                  className="w-full px-6 py-4 bg-gradient-to-r from-[#00C6FF] to-[#0072FF] text-white rounded-xl font-semibold text-lg hover:from-[#00D4FF] hover:to-[#0080FF] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 flex items-center justify-center gap-2"
                 >
-                  <span className="relative z-10 flex items-center justify-center gap-4">
-                    {isHarvestPending ? (
-                      <>
-                        <motion.div
-                          animate={{ rotate: 360 }}
-                          transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-                        >
-                          <Zap className="w-7 h-7" />
-                        </motion.div>
-                        <span>Harvesting...</span>
-                      </>
-                    ) : (
-                      <>
-                        <motion.div
-                          animate={{ scale: [1, 1.2, 1], rotate: [0, 10, -10, 0] }}
-                          transition={{ duration: 2, repeat: Infinity }}
-                        >
-                          <Zap className="w-8 h-8" />
-                        </motion.div>
-                        <span className="tracking-wide">Harvest & Donate Now</span>
-                      </>
-                    )}
-                  </span>
-                  <motion.div
-                    className="absolute inset-0 bg-gradient-to-r from-cyan-500/50 via-purple-500/50 to-pink-500/50"
-                    animate={{
-                      x: ['-100%', '100%'],
-                    }}
-                    transition={{
-                      duration: 3,
-                      repeat: Infinity,
-                      ease: 'linear',
-                    }}
-                  />
-                  <motion.div
-                    className="absolute inset-0 bg-white/10"
-                    animate={{
-                      opacity: [0.3, 0.6, 0.3],
-                    }}
-                    transition={{
-                      duration: 2,
-                      repeat: Infinity,
-                    }}
-                  />
-                </motion.button>
+                  {isHarvestPending ? (
+                    <>
+                      <motion.div
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                      >
+                        <Zap className="w-5 h-5" />
+                      </motion.div>
+                      Harvesting...
+                    </>
+                  ) : (
+                    <>
+                      <Zap className="w-5 h-5" />
+                      Harvest & Donate Now
+                    </>
+                  )}
+                </button>
               </motion.div>
             )}
           </AnimatePresence>
@@ -487,11 +393,11 @@ export default function Dashboard() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.6 }}
-            className="glass-strong rounded-3xl p-8 hover-lift border border-white/10 backdrop-blur-xl"
+            className="card-dark p-8"
           >
             <div className="flex items-center gap-4 mb-6">
-              <BarChart3 className="w-8 h-8 text-teal-400" />
-              <h3 className="font-black text-white text-2xl">Yield Growth</h3>
+              <BarChart3 className="w-6 h-6 text-blue-400" />
+              <h3 className="font-bold text-white text-xl">Yield Growth</h3>
             </div>
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={yieldData}>
@@ -525,11 +431,11 @@ export default function Dashboard() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.7 }}
-            className="glass-strong rounded-3xl p-8 hover-lift border border-white/10 backdrop-blur-xl"
+            className="card-dark p-8"
           >
             <div className="flex items-center gap-4 mb-6">
-              <Heart className="w-8 h-8 text-red-400" />
-              <h3 className="font-black text-white text-2xl">Donation Distribution</h3>
+              <Heart className="w-6 h-6 text-blue-400" />
+              <h3 className="font-bold text-white text-xl">Donation Distribution</h3>
             </div>
             <ResponsiveContainer width="100%" height={300}>
               <PieChart>
@@ -568,11 +474,11 @@ export default function Dashboard() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.8 }}
-          className="glass-strong rounded-3xl p-8 hover-lift border border-white/10 backdrop-blur-xl"
+          className="card-dark p-8"
         >
           <div className="flex items-center gap-4 mb-6">
-            <Network className="w-8 h-8 text-purple-400" />
-            <h3 className="font-black text-white text-2xl">Adapter Allocation</h3>
+            <Network className="w-6 h-6 text-blue-400" />
+            <h3 className="font-bold text-white text-xl">Adapter Allocation</h3>
           </div>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={adapterData}>

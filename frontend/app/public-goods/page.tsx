@@ -46,8 +46,8 @@ export default function PublicGoodsPage() {
           transition={{ duration: 0.6 }}
           className="mb-10"
         >
-          <h1 className="text-4xl md:text-5xl font-bold gradient-text mb-2">Public Goods</h1>
-          <p className="text-gray-400 text-lg">
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-2">Public Goods</h1>
+          <p className="text-white/70 text-lg">
             A portion of all yield generated is automatically donated to support Ethereum ecosystem growth
           </p>
         </motion.div>
@@ -85,21 +85,18 @@ export default function PublicGoodsPage() {
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: stat.delay, duration: 0.6 }}
-              className="glass-strong rounded-2xl p-6 hover-lift group relative overflow-hidden"
+              className="card-dark"
             >
-              <div className={`absolute inset-0 bg-gradient-to-br ${stat.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-500`}></div>
-              <div className="relative z-10">
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-gray-400 text-sm font-medium">{stat.label}</span>
-                  <div className={`p-2 rounded-lg bg-gradient-to-br ${stat.gradient} opacity-80`}>
-                    <stat.icon className="h-5 w-5 text-white" />
-                  </div>
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-white/70 text-sm font-medium">{stat.label}</span>
+                <div className="p-2 rounded-lg bg-gradient-blue">
+                  <stat.icon className="h-5 w-5 text-white" />
                 </div>
-                <div className={`text-3xl font-bold bg-gradient-to-r ${stat.gradient} bg-clip-text text-transparent mb-1`}>
-                  {stat.value}
-                </div>
-                <div className="text-sm text-gray-500">{stat.subtext}</div>
               </div>
+              <div className="text-3xl font-bold text-blue-gradient mb-1">
+                {stat.value}
+              </div>
+              <div className="text-sm text-white/50">{stat.subtext}</div>
             </motion.div>
           ))}
         </div>
@@ -112,8 +109,8 @@ export default function PublicGoodsPage() {
             transition={{ delay: 0.4 }}
             className="mb-6"
           >
-            <h2 className="text-3xl font-bold gradient-text mb-2">Recipients</h2>
-            <p className="text-gray-400">Public goods organizations receiving donations</p>
+            <h2 className="text-3xl font-bold text-white mb-2">Recipients</h2>
+            <p className="text-white/70">Public goods organizations receiving donations</p>
           </motion.div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {PUBLIC_GOODS_RECIPIENTS.map((recipient, index) => (
