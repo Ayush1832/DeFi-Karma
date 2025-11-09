@@ -1,0 +1,18 @@
+{
+  "name": "defi-karma-subgraph",
+  "version": "1.0.0",
+  "description": "The Graph subgraph for DeFi Karma",
+  "scripts": {
+    "codegen": "graph codegen",
+    "build": "graph build",
+    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ <username>/defi-karma",
+    "create-local": "graph create --node http://localhost:8020/ <username>/defi-karma",
+    "remove-local": "graph remove --node http://localhost:8020/ <username>/defi-karma",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 <username>/defi-karma"
+  },
+  "dependencies": {
+    "@graphprotocol/graph-cli": "0.63.0",
+    "@graphprotocol/graph-ts": "0.32.0"
+  }
+}
+

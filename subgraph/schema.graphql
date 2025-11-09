@@ -1,0 +1,76 @@
+type User @entity {
+  id: ID! # user address
+  totalDeposits: BigInt!
+  totalWithdrawals: BigInt!
+  totalDonations: BigInt!
+  currentShares: BigInt!
+  deposits: [Deposit!]! @derivedFrom(field: "user")
+  withdrawals: [Withdrawal!]! @derivedFrom(field: "user")
+}
+
+type Vault @entity {
+  id: ID! # vault address
+  totalAssets: BigInt!
+  totalYield: BigInt!
+  totalDonations: BigInt!
+  donationRatio: BigInt!
+  deposits: [Deposit!]! @derivedFrom(field: "vault")
+  withdrawals: [Withdrawal!]! @derivedFrom(field: "vault")
+  harvests: [Harvest!]! @derivedFrom(field: "vault")
+}
+
+type Adapter @entity {
+  id: ID! # adapter address
+  protocolName: String!
+  currentAllocation: BigInt!
+  yieldGenerated: BigInt!
+  vault: Vault!
+}
+
+type Deposit @entity {
+  id: ID! # transaction hash
+  user: User!
+  vault: Vault!
+  amount: BigInt!
+  shares: BigInt!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+}
+
+type Withdrawal @entity {
+  id: ID! # transaction hash
+  user: User!
+  vault: Vault!
+  amount: BigInt!
+  shares: BigInt!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+}
+
+type Harvest @entity {
+  id: ID! # transaction hash
+  vault: Vault!
+  totalYield: BigInt!
+  donatedAmount: BigInt!
+  userShare: BigInt!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  adapterBreakdown: [AdapterYield!]! @derivedFrom(field: "harvest")
+}
+
+type AdapterYield @entity {
+  id: ID! # harvest id + adapter address
+  harvest: Harvest!
+  adapter: Adapter!
+  yield: BigInt!
+}
+
+type Donation @entity {
+  id: ID! # transaction hash
+  amount: BigInt!
+  recipient: String!
+  token: String!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+}
+

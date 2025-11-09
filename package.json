@@ -1,0 +1,31 @@
+{
+  "name": "defi-karma",
+  "version": "1.0.0",
+  "description": "DeFi Karma - A Yield-Orchestrated Public Goods Engine",
+  "scripts": {
+    "contracts:compile": "cd contracts && npm run compile",
+    "contracts:test": "cd contracts && npm test",
+    "contracts:deploy": "cd contracts && npm run deploy:sepolia",
+    "frontend:dev": "cd frontend && npm run dev",
+    "frontend:build": "cd frontend && npm run build",
+    "frontend:start": "cd frontend && npm start",
+    "subgraph:codegen": "cd subgraph && npm run codegen",
+    "subgraph:build": "cd subgraph && npm run build",
+    "subgraph:deploy": "cd subgraph && npm run deploy"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/defi-karma"
+  },
+  "keywords": [
+    "defi",
+    "yield",
+    "public-goods",
+    "erc-4626",
+    "octant",
+    "ethereum"
+  ],
+  "author": "",
+  "license": "MIT"
+}
+

@@ -1,0 +1,75 @@
+specVersion: 0.0.5
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: KarmaVault
+    network: sepolia
+    source:
+      address: "{{KARMA_VAULT_ADDRESS}}"
+      abi: KarmaVault
+      startBlock: 0
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - User
+        - Vault
+        - Deposit
+        - Withdrawal
+        - Harvest
+      abis:
+        - name: KarmaVault
+          file: ./abis/KarmaVault.json
+      eventHandlers:
+        - event: Deposit(indexed address,indexed address,uint256,uint256)
+          handler: handleDeposit
+        - event: Withdraw(indexed address,indexed address,indexed address,uint256,uint256)
+          handler: handleWithdraw
+        - event: YieldHarvested(uint256,uint256)
+          handler: handleYieldHarvested
+        - event: HarvestAndDonate(uint256,uint256,uint256)
+          handler: handleHarvestAndDonate
+      file: ./src/karma-vault.ts
+  - kind: ethereum
+    name: YieldRouter
+    network: sepolia
+    source:
+      address: "{{YIELD_ROUTER_ADDRESS}}"
+      abi: YieldRouter
+      startBlock: 0
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Donation
+      abis:
+        - name: YieldRouter
+          file: ./abis/YieldRouter.json
+      eventHandlers:
+        - event: DonationExecuted(uint256,address,uint256)
+          handler: handleDonationExecuted
+      file: ./src/yield-router.ts
+  - kind: ethereum
+    name: ImpactHook
+    network: sepolia
+    source:
+      address: "{{IMPACT_HOOK_ADDRESS}}"
+      abi: ImpactHook
+      startBlock: 0
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Donation
+      abis:
+        - name: ImpactHook
+          file: ./abis/ImpactHook.json
+      eventHandlers:
+        - event: ImpactDonation(uint256,address,address,uint256,uint256)
+          handler: handleImpactDonation
+      file: ./src/impact-hook.ts
+
